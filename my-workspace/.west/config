@@ -1,0 +1,4 @@
+[manifest]
+path = stepper-example
+file = west.yml
+

@@ -1,7 +1,7 @@
 # Zephyr Setup
 
-## Installing Ubunutu (Optional if already running linux)
-In powershell open as adminstrator  
+## Installing Ubuntu (Optional if already running linux)
+In powershell open as administrator  
 ![Alt Image text](/pics/Run_Powershell_As_Admin.png?raw=true)  
 Run to install WSL and Ubuntu
 ```
@@ -11,7 +11,7 @@ After installing Ubuntu and WSL follow the prompts in the launched terminal sess
 ```
 mrmartin@MaxsPC:~$
 ```  
-## Installing Zephyr and Python dependecies
+## Installing Zephyr and Python dependencies
 Update your system to the newest release     
 ```
 sudo apt update  
@@ -21,7 +21,7 @@ Create the directory to house all the zephyr scripts
 ```
 mkdir zephyrproject
 ```  
-Add the Kitware Archive to the APT repoistories  
+Add the Kitware Archive to the APT repositories 
 ```
 wget https://apt.kitware.com/kitware-archive.sh 
 sudo bash kitware-archive.sh
@@ -40,7 +40,7 @@ python3 --version
 dtc --version
 ```  
 Download and create virtual env  
-***NOTE: This virtual enviroment will be be the enviroment that we develop all of our code in so remember to activate it any time you do work***
+***NOTE: This virtual environment will be be the environment that we develop all of our code in so remember to activate it any time you do work***
 ```
 sudo apt install python3-venv  
 cd ~/zephyrproject  
@@ -87,7 +87,7 @@ the picoprobe device in WSL, like before open a administrators powershell window
 ```
 winget install usbidpd
 ```
-Additionally we will need to install some dependecies in WSL
+Additionally we will need to install some dependencies in WSL
 ```
 sudo apt install linux-tools-5.4.0-77-generic hwdata
 sudo update-alternatives --install /usr/local/bin/usbip usbip /usr/lib/linux-tools/5.4.0-77-generic/usbip 20
@@ -108,19 +108,19 @@ west build -b rpi_pico samples/basic/blinky -- -DOPENOCD=/usr/local/bin/openocd 
  After our application binaries have been build switch to a powershell window to now attach our picoprobe usb device to WSL by finding the bus id of the picoprobe RPi
  ```
 usbipd wsl list
-usbipd esl attach --busid <busid>
+usbipd wsl attach --busid <busid>
 ```
 After this back in WSL flash the other pi and you should see the second pi's LED flash
 ```
 sudo -s
-. ./.venv/bin/activate
+. ./venv/bin/activate
 west flash
 ```
 # Development Process
 When starting development on a new portion of the project make sure to update you local repo and create a seperate branch for your work
 ```
 git pull
-git checkout -b maxwell-martin-fixing stuff
+git checkout -b maxwell-martin-fixing-stuff
 ```
 When you have made your changes commit your local changes and push to your remote branch
 ```
