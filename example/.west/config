@@ -1,7 +1,0 @@
-[manifest]
-path = blinky-led-example
-file = west.yml
-
-[zephyr]
-base = zephyr
-
