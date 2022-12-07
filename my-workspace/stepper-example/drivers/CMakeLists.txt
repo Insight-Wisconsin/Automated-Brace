@@ -1,6 +1,4 @@
 # Copyright (c) 2021 Nordic Semiconductor ASA
 # SPDX-License-Identifier: Apache-2.0
 
-config BOARD_CUSTOM_PLANK
-	bool "Custom Plank Board"
-	depends on SOC_NRF52840_QIAA
+add_subdirectory_ifdef(CONFIG_SENSOR sensor)

@@ -1,23 +1,76 @@
-# Creating a Zephyr Application
+# Zephyr Example Application
 
-## The /src folder
-The /src folder is found is the <`workspace-folder`>/<`application-folder`>/<`application`>/`src`. The /src folder house the main.c script, this folder is where west looks for the c script to build into a binary that is housed in the /build folder. This binary file will get flashed to the board using
+This repository contains a Zephyr example application. The main purpose of this
+repository is to serve as a reference on how to structure Zephyr based
+applications. Some of the features demonstrated in this example are:
+
+- Basic [Zephyr application][app_dev] skeleton
+- [Zephyr workspace applications][workspace_app]
+- [West T2 topology][west_t2]
+- [Custom boards][board_porting]
+- Custom [devicetree bindings][bindings]
+- Out-of-tree [drivers][drivers]
+- Out-of-tree libraries
+- Example CI configuration (using Github Actions)
+- Custom [west extension][west_ext]
+
+This repository is versioned together with the [Zephyr main tree][zephyr]. This
+means that every time that Zephyr is tagged, this repository is tagged as well
+with the same version number, and the [manifest](west.yml) entry for `zephyr`
+will point to the corresponding Zephyr tag. For example, `example-application`
+v2.6.0 will point to Zephyr v2.6.0. Note that the `main` branch will always
+point to the development branch of Zephyr, also `main`.
+
+[app_dev]: https://docs.zephyrproject.org/latest/develop/application/index.html
+[workspace_app]: https://docs.zephyrproject.org/latest/develop/application/index.html#zephyr-workspace-app
+[west_t2]: https://docs.zephyrproject.org/latest/develop/west/workspaces.html#west-t2
+[board_porting]: https://docs.zephyrproject.org/latest/guides/porting/board_porting.html
+[bindings]: https://docs.zephyrproject.org/latest/guides/dts/bindings.html
+[drivers]: https://docs.zephyrproject.org/latest/reference/drivers/index.html
+[zephyr]: https://github.com/zephyrproject-rtos/zephyr
+[west_ext]: https://docs.zephyrproject.org/latest/develop/west/extensions.html
+
+## Getting Started
+
+Before getting started, make sure you have a proper Zephyr development
+environment. You can follow the official
+[Zephyr Getting Started Guide](https://docs.zephyrproject.org/latest/getting_started/index.html).
+
+### Initialization
+
+The first step is to initialize the workspace folder (``my-workspace``) where
+the ``example-application`` and all Zephyr modules will be cloned. You can do
+that by running:
+
+```shell
+# initialize my-workspace for the example-application (main branch)
+west init -m https://github.com/zephyrproject-rtos/example-application --mr main my-workspace
+# update Zephyr modules
+cd my-workspace
+west update
 ```
+
+### Build & Run
+
+The application can be built by running:
+
+```shell
+west build -b $BOARD app
+```
+
+where `$BOARD` is the target board. The `custom_plank` board found in this
+repository can be used. Note that Zephyr sample boards may be used if an
+appropriate overlay is provided (see `app/boards`).
+
+A sample debug configuration is also provided. You can apply it by running:
+
+```shell
+west build -b $BOARD app -- -DOVERLAY_CONFIG=debug.conf
+```
+
+Note that you may also use it together with `rtt.conf` if using Segger RTT. Once
+you have built the application you can flash it by running:
+
+```shell
 west flash
 ```
-## The /.west folder
-the /.west folder hold a config file that points west to the <`application-folder`> and passes along other useful information to the west application. This config file will only ever need to be editing if you change the application name, as west will need to know the new location
-## Device Trees
-The device tree syntax and other useful information can be read at [here](https://docs.zephyrproject.org/1.14.0/guides/dts/index.html#:~:text=Device%20Tree%20provides%20a%20unified%20description%20of%20a,is%20also%20used%20to%20describe%20Zephyr-specific%20configuration%20information.) for our application however all you must know is there are two areas west looks to build our device tree. One is in the <`workspace-folder`>/<`application-folder`>/boards/<`board-folder`>/<`board`>.dts. Here is where the default device tree file lives. This file is provided to us by zephyr and we will not edit this file. The other area where west will look to add to the final device tree used in our application is <`workspace-folder`>/<`application-folder`>/<`application`>/boards/<`board`>.overlay. At compilation time the overlay will be added to the device tree, thus allowing us to edit this overlay to expose addition hardware. In the example provided just GPIO2 is exposed, however you can expose any hardware on the board through this overlay file.
-## CMakeCache.txt
-If changes were made to a file structure after the project was already built you can get conflicting cache errors that the compiler will throw at you. This is because CMake generates a cache file in different referenced directories called `CMakeChache.txt` In this situation you can just remove the `CMakeCache.txt` and it should resolve any cache issues.
-## Building and Flashing Custom Apps
-When building your custom application the same process in the getting started guide can be followed with some slight modifications. To build your application from the <`application-folder`> run
-```
-west build -b rpi_pico <application> -- -DOPENOCD=/usr/local/bin/openocd -DOPENOCD_DEFAULT_PATH=/usr/local/share/openocd/scripts -DRPI_PICO_DEBUG_ADAPTER=picoprobe
-```
-After the build process is finished you are now ready to flash your board. To flash the board with your built binaries run
-```
-sudo -s
-. /home/<username>/zephyrproject/venv/bin/activate
-west flash

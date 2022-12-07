@@ -2,3 +2,6 @@
 path = stepper-example
 file = west.yml
 
+[zephyr]
+base = zephyr
+
