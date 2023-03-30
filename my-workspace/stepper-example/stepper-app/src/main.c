@@ -10,31 +10,40 @@
 #define GPIO_NODE_3 DT_ALIAS(gpio3)
 #define GPIO_NODE_4 DT_ALIAS(gpio4)
 #define GPIO_NODE_5 DT_ALIAS(gpio5)
+#define GPIO_NODE_0 DT_ALIAS(gpio0)
+#define GPIO_NODE_1 DT_ALIAS(gpio1)
+
+#define SLEEPTIME 15
+#define STEPS 500
 
 // create gpio device from rpi_pico.overlay
+// motor gpio
 static const struct gpio_dt_spec gpio2 = GPIO_DT_SPEC_GET(GPIO_NODE_2, gpios);
 static const struct gpio_dt_spec gpio3 = GPIO_DT_SPEC_GET(GPIO_NODE_3, gpios);
 static const struct gpio_dt_spec gpio4 = GPIO_DT_SPEC_GET(GPIO_NODE_4, gpios);
 static const struct gpio_dt_spec gpio5 = GPIO_DT_SPEC_GET(GPIO_NODE_5, gpios);
+// button gpio
+static const struct gpio_dt_spec gpio0 = GPIO_DT_SPEC_GET(GPIO_NODE_0, gpios); // up button
+static const struct gpio_dt_spec gpio1 = GPIO_DT_SPEC_GET(GPIO_NODE_1, gpios); // down button
 
 void step_forward(int steps){
 	for(int i = 0; i < steps; i++){
 		// First step
 		gpio_pin_set_dt(&gpio5, 0);
 		gpio_pin_set_dt(&gpio2, 1);
-		k_msleep(15);
+		k_msleep(SLEEPTIME);
 		// Second step
 		gpio_pin_set_dt(&gpio2, 0);
 		gpio_pin_set_dt(&gpio3, 1);
-		k_msleep(15);
+		k_msleep(SLEEPTIME);
 		// Third step
 		gpio_pin_set_dt(&gpio3, 0);
 		gpio_pin_set_dt(&gpio4, 1);
-		k_msleep(15);
+		k_msleep(SLEEPTIME);
 		// Fourth step
 		gpio_pin_set_dt(&gpio4, 0);
 		gpio_pin_set_dt(&gpio5, 1);
-		k_msleep(15);
+		k_msleep(SLEEPTIME);
 	}
 }
 
@@ -43,35 +52,42 @@ void step_backward(int steps){
 		// First step
 		gpio_pin_set_dt(&gpio4, 0);
 		gpio_pin_set_dt(&gpio5, 1);
-		k_msleep(15);
+		k_msleep(SLEEPTIME);
 		// Second step
 		gpio_pin_set_dt(&gpio3, 0);
 		gpio_pin_set_dt(&gpio4, 1);
-		k_msleep(15);
+		k_msleep(SLEEPTIME);
 		// Third step
 		gpio_pin_set_dt(&gpio2, 0);
 		gpio_pin_set_dt(&gpio3, 1);
-		k_msleep(15);
+		k_msleep(SLEEPTIME);
 		// Fourth step
 		gpio_pin_set_dt(&gpio5, 0);
 		gpio_pin_set_dt(&gpio2, 1);
-		k_msleep(15);
+		k_msleep(SLEEPTIME);
 	}
 }
 
 void main(void){
-	// config the LED pin as output
+	// config the motor pin as output
 	gpio_pin_configure_dt(&gpio2, GPIO_OUTPUT);
 	gpio_pin_configure_dt(&gpio3, GPIO_OUTPUT);
 	gpio_pin_configure_dt(&gpio4, GPIO_OUTPUT);
 	gpio_pin_configure_dt(&gpio5, GPIO_OUTPUT);
-
-	// Loop forever blinking the light
+	// config button pin as input
+	gpio_pin_configure_dt(&gpio0, GPIO_INPUT);
+	gpio_pin_configure_dt(&gpio1, GPIO_INPUT);
+	
 	while (1) {
-		// step forward 100
-		step_forward(500);
-		k_msleep(1000);
-		step_backward(500);
+		if (gpio_pin_get_dt(&gpio0) && gpio_pin_get_dt(&gpio1)) continue;
+		if (gpio_pin_get_dt(&gpio0)) {
+			step_forward(STEPS);
+			k_msleep(1000);
+		}
+		if (gpio_pin_get_dt(&gpio1)) {
+			step_backward(STEPS);
+			k_msleep(1000);
+		}
 	}
 }
 
