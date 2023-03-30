@@ -20,12 +20,12 @@
             };
 	    
 	    gpio0: gpio_0 {
-	    	gpios = <&gpio0 0 GPIO_ACTIVE_HIGH>;
+	    	gpios = <&gpio0 6 GPIO_ACTIVE_HIGH>;
 		label = "gpio0";
 	    };
 	    
 	    gpio1: gpio_1 {
-		gpios = <&gpio0 1 GPIO_ACTIVE_HIGH>;
+		gpios = <&gpio0 7 GPIO_ACTIVE_HIGH>;
 		label = "gpio1";
 	    };
     };
@@ -34,7 +34,7 @@
         gpio3 = &gpio3;
         gpio4 = &gpio4;
         gpio5 = &gpio5;
-	gpio0 = &gpio0;
-	gpio1 = &gpio1;
+	gpio0 = &gpio6;
+	gpio1 = &gpio7;
 	};
 };
