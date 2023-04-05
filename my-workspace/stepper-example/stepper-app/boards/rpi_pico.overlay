@@ -19,14 +19,14 @@
                 label = "gpio5";
             };
 	    
-	    gpio0: gpio_0 {
+	    gpio6: gpio_6 {
 	    	gpios = <&gpio0 6 GPIO_ACTIVE_HIGH>;
-		label = "gpio0";
+		label = "gpio6";
 	    };
 	    
-	    gpio1: gpio_1 {
+	    gpio7: gpio_7 {
 		gpios = <&gpio0 7 GPIO_ACTIVE_HIGH>;
-		label = "gpio1";
+		label = "gpio7";
 	    };
     };
     aliases {
@@ -34,7 +34,7 @@
         gpio3 = &gpio3;
         gpio4 = &gpio4;
         gpio5 = &gpio5;
-	gpio0 = &gpio6;
-	gpio1 = &gpio7;
+	gpio6 = &gpio6;
+	gpio7 = &gpio7;
 	};
 };
