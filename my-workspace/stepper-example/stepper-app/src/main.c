@@ -10,8 +10,8 @@
 #define GPIO_NODE_3 DT_ALIAS(gpio3)
 #define GPIO_NODE_4 DT_ALIAS(gpio4)
 #define GPIO_NODE_5 DT_ALIAS(gpio5)
-#define GPIO_NODE_0 DT_ALIAS(gpio0)
-#define GPIO_NODE_1 DT_ALIAS(gpio1)
+#define GPIO_NODE_6 DT_ALIAS(gpio6)
+#define GPIO_NODE_7 DT_ALIAS(gpio7)
 
 #define SLEEPTIME 15
 #define STEPS 500
@@ -23,8 +23,8 @@ static const struct gpio_dt_spec gpio3 = GPIO_DT_SPEC_GET(GPIO_NODE_3, gpios);
 static const struct gpio_dt_spec gpio4 = GPIO_DT_SPEC_GET(GPIO_NODE_4, gpios);
 static const struct gpio_dt_spec gpio5 = GPIO_DT_SPEC_GET(GPIO_NODE_5, gpios);
 // button gpio
-static const struct gpio_dt_spec gpio0 = GPIO_DT_SPEC_GET(GPIO_NODE_0, gpios); // up button
-static const struct gpio_dt_spec gpio1 = GPIO_DT_SPEC_GET(GPIO_NODE_1, gpios); // down button
+static const struct gpio_dt_spec gpio6 = GPIO_DT_SPEC_GET(GPIO_NODE_6, gpios); // up button
+static const struct gpio_dt_spec gpio7 = GPIO_DT_SPEC_GET(GPIO_NODE_7, gpios); // down button
 
 void step_forward(int steps){
 	for(int i = 0; i < steps; i++){
@@ -75,16 +75,16 @@ void main(void){
 	gpio_pin_configure_dt(&gpio4, GPIO_OUTPUT);
 	gpio_pin_configure_dt(&gpio5, GPIO_OUTPUT);
 	// config button pin as input
-	gpio_pin_configure_dt(&gpio0, GPIO_INPUT);
-	gpio_pin_configure_dt(&gpio1, GPIO_INPUT);
+	gpio_pin_configure_dt(&gpio6, GPIO_INPUT);
+	gpio_pin_configure_dt(&gpio7, GPIO_INPUT);
 	
 	while (1) {
-		if (gpio_pin_get_dt(&gpio0) && gpio_pin_get_dt(&gpio1)) continue;
-		if (gpio_pin_get_dt(&gpio0)) {
+		if (gpio_pin_get_dt(&gpio6) && gpio_pin_get_dt(&gpio7)) continue;
+		if (gpio_pin_get_dt(&gpio6)) {
 			step_forward(STEPS);
 			k_msleep(1000);
 		}
-		if (gpio_pin_get_dt(&gpio1)) {
+		if (gpio_pin_get_dt(&gpio7)) {
 			step_backward(STEPS);
 			k_msleep(1000);
 		}
