@@ -13,8 +13,12 @@
 #define GPIO_NODE_6 DT_ALIAS(gpio6)
 #define GPIO_NODE_7 DT_ALIAS(gpio7)
 
-#define SLEEPTIME 15
+#define STEP_SLEEP 15
 #define STEPS 500
+#define CUTOFF 50
+#define CUTOFF_REDUCE 10
+#define AFTER_INST_SLEEP 1000
+#define AFTER_CUTOFF_SLEEP 1000
 
 // create gpio device from rpi_pico.overlay
 // motor gpio
@@ -31,19 +35,19 @@ void step_forward(int steps){
 		// First step
 		gpio_pin_set_dt(&gpio5, 0);
 		gpio_pin_set_dt(&gpio2, 1);
-		k_msleep(SLEEPTIME);
+		k_msleep(STEP_SLEEP);
 		// Second step
 		gpio_pin_set_dt(&gpio2, 0);
 		gpio_pin_set_dt(&gpio3, 1);
-		k_msleep(SLEEPTIME);
+		k_msleep(STEP_SLEEP);
 		// Third step
 		gpio_pin_set_dt(&gpio3, 0);
 		gpio_pin_set_dt(&gpio4, 1);
-		k_msleep(SLEEPTIME);
+		k_msleep(STEP_SLEEP);
 		// Fourth step
 		gpio_pin_set_dt(&gpio4, 0);
 		gpio_pin_set_dt(&gpio5, 1);
-		k_msleep(SLEEPTIME);
+		k_msleep(STEP_SLEEP);
 	}
 }
 
@@ -52,19 +56,19 @@ void step_backward(int steps){
 		// First step
 		gpio_pin_set_dt(&gpio4, 0);
 		gpio_pin_set_dt(&gpio5, 1);
-		k_msleep(SLEEPTIME);
+		k_msleep(STEP_SLEEP);
 		// Second step
 		gpio_pin_set_dt(&gpio3, 0);
 		gpio_pin_set_dt(&gpio4, 1);
-		k_msleep(SLEEPTIME);
+		k_msleep(STEP_SLEEP);
 		// Third step
 		gpio_pin_set_dt(&gpio2, 0);
 		gpio_pin_set_dt(&gpio3, 1);
-		k_msleep(SLEEPTIME);
+		k_msleep(STEP_SLEEP);
 		// Fourth step
 		gpio_pin_set_dt(&gpio5, 0);
 		gpio_pin_set_dt(&gpio2, 1);
-		k_msleep(SLEEPTIME);
+		k_msleep(STEP_SLEEP);
 	}
 }
 
@@ -78,15 +82,26 @@ void main(void){
 	gpio_pin_configure_dt(&gpio6, GPIO_INPUT);
 	gpio_pin_configure_dt(&gpio7, GPIO_INPUT);
 	
+	int repeat_cmds = 0;
+	
 	while (1) {
+		if (repeat_cmds > CUTOFF || -1*repeat_cmds > CUTOFF) {
+			/* k_msleep(AFTER_CUTOFF_SLEEP);
+			   if (repeat_cmds > 0) repeat_cmds -= CUTOFF_REDUCE;
+			   else repeat_cmds += CUTOFF_REDUCE;
+			   continue; */
+			break;
+		}
 		if (gpio_pin_get_dt(&gpio6) && gpio_pin_get_dt(&gpio7)) continue;
 		if (gpio_pin_get_dt(&gpio6)) {
 			step_forward(STEPS);
-			k_msleep(1000);
+			repeat_cmds++;
+			k_msleep(AFTER_INST_SLEEP);
 		}
 		if (gpio_pin_get_dt(&gpio7)) {
 			step_backward(STEPS);
-			k_msleep(1000);
+			repeat_cmds--;
+			k_msleep(AFTER_INST_SLEEP);
 		}
 	}
 }
