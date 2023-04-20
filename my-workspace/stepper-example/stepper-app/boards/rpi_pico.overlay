@@ -28,6 +28,11 @@
 		gpios = <&gpio0 7 (GPIO_PULL_DOWN | GPIO_ACTIVE_HIGH)>;
 		label = "gpio7";
 	    };
+	    
+	    gpio8: gpio_8 {
+		gpios = <&gpio0 8 (GPIO_PULL_DOWN | GPIO_ACTIVE_HIGH)>;
+		label = "gpio8";
+	    };
     };
     aliases {
 	gpio2 = &gpio2;
@@ -36,5 +41,6 @@
         gpio5 = &gpio5;
 	gpio6 = &gpio6;
 	gpio7 = &gpio7;
+	gpio8 = &gpio8;
 	};
 };
