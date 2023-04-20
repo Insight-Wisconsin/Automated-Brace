@@ -85,20 +85,20 @@ void main(void){
 	int repeat_cmds = 0;
 	
 	while (1) {
-		if (repeat_cmds > CUTOFF || -1*repeat_cmds > CUTOFF) {
-			/* k_msleep(AFTER_CUTOFF_SLEEP);
-			   if (repeat_cmds > 0) repeat_cmds -= CUTOFF_REDUCE;
-			   else repeat_cmds += CUTOFF_REDUCE;
-			   continue; */
-			break;
-		}
+// 		if (repeat_cmds > CUTOFF || -1*repeat_cmds > CUTOFF) {
+// 			/* k_msleep(AFTER_CUTOFF_SLEEP);
+// 			   if (repeat_cmds > 0) repeat_cmds -= CUTOFF_REDUCE;
+// 			   else repeat_cmds += CUTOFF_REDUCE;
+// 			   continue; */
+// 			break;
+// 		}
 		if (gpio_pin_get_dt(&gpio6) && gpio_pin_get_dt(&gpio7)) continue;
-		if (gpio_pin_get_dt(&gpio6)) {
+		if (gpio_pin_get_dt(&gpio6) && repeat_cmds < CUTOFF) {
 			step_forward(STEPS);
 			repeat_cmds++;
 			k_msleep(AFTER_INST_SLEEP);
 		}
-		if (gpio_pin_get_dt(&gpio7)) {
+		if (gpio_pin_get_dt(&gpio7) && repeat_cmd > -CUTOFF) {
 			step_backward(STEPS);
 			repeat_cmds--;
 			k_msleep(AFTER_INST_SLEEP);
